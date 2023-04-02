@@ -1,4 +1,4 @@
-name: mad
+name: spicey
 description: A sample command-line application.
 version: 1.0.0
 # repository: https://github.com/my_org/my_repo
@@ -14,5 +14,6 @@ dev_dependencies:
   test: ^1.21.0
 dependencies:
   cron: ^0.5.1
+  http: ^0.13.5
   nyxx: ^5.0.1
   nyxx_commands: ^5.0.0
