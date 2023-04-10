@@ -31,7 +31,6 @@ void main() async {
     ..registerPlugin(Logging())
     ..registerPlugin(CliIntegration())
     ..registerPlugin(IgnoreExceptions())
-    ..registerPlugin(Logging(logLevel: Level.ALL))
     ..registerPlugin(commands);
 
   await client.connect();
