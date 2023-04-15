@@ -2,12 +2,15 @@ import 'dart:io';
 import 'package:nyxx/nyxx.dart';
 import 'package:nyxx_commands/nyxx_commands.dart';
 import 'package:spicey/spicey_commands.dart';
+import '../lib/src/Services/db.dart' as db;
 
 void main() async {
-  print("HELLO?!?!?");
+  final database = db.MyDatabase('./lib/src/Data');
   final token = Platform.environment['discordToken']!;
   final client = NyxxFactory.createNyxxWebsocket(token, GatewayIntents.all);
-  final commands = CommandsPlugin(prefix: mentionOr((_) => "?"), options: CommandsOptions(logErrors: false));
+  final commands = CommandsPlugin(
+      prefix: mentionOr((_) => "?"),
+      options: CommandsOptions(logErrors: false));
   commands
     ..addCommand(avatar)
     ..addCommand(addCode)
@@ -15,18 +18,48 @@ void main() async {
     ..addCommand(getBirthday)
     ..addCommand(addBirthday)
     ..addCommand(getcode)
+    ..addCommand(timeout)
+    ..addCommand(snipe)
+    ..addCommand(untimeout)
+    ..addCommand(exile)
     ..addCommand(updatecode)
     ..addCommand(ping);
 
   client
     ..eventsWs.onReady.listen((event) {
       var shardManager = client.shardManager;
-      
+
       shardManager.setPresence(PresenceBuilder.of(
-        activity: ActivityBuilder('to my heart', ActivityType.listening)));
+          activity: ActivityBuilder('to my heart', ActivityType.listening)));
     })
-    ..eventsWs.onMessageDelete.listen((event) {
-      print("Hello");
+    ..eventsWs.onMessageDelete.listen((event) async {
+      // make sure its not the bot message that got deleted
+      if (event.message?.author.id.toString() != "1091860915042930799") {
+        print("Hello");
+        final serverId = event.message?.guild?.id.toString();
+
+        if (serverId == null) return;
+
+        final table = await database.getTable(serverId);
+
+        final deletedMessage = {
+          'id': event.message?.id.toString(),
+          'content': event.message?.content,
+          'author': {
+            'id': event.message?.author.id.toString(),
+            'username': event.message?.author.username
+          }
+        };
+        if (event.message?.attachments.isEmpty == false) {
+          deletedMessage['attachment'] = event.message?.attachments[0].url;
+        }
+
+        final messages = table[serverId] ?? <Map<String, dynamic>>[];
+        messages.add(deletedMessage);
+        table[serverId] = messages;
+
+        await database.setTable(serverId, table);
+      }
     })
     ..registerPlugin(Logging())
     ..registerPlugin(CliIntegration())
@@ -34,6 +67,4 @@ void main() async {
     ..registerPlugin(commands);
 
   await client.connect();
-
-    
 }
