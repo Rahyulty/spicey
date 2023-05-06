@@ -22,12 +22,13 @@ Future<Iterable<ArgChoiceBuilder>> autocompletCode(AutocompleteContext _) async 
   });
 }
 
+
 ChatCommand removecode = ChatCommand(
     'remove-code',
     'remove a specific games private server code',
     id('remove-code', (
       IChatContext context,
-      @Autocomplete(autocompleteCode) String key,
+      @Autocomplete(autocompletCode) String key,
     ) async {
       var member = context.guild?.members[context.user.id];
       // Fetch the member if it was not cached

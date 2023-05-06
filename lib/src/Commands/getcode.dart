@@ -10,7 +10,7 @@ final detabase = deta.base('ragenki-ps');
 
 var check = GuildCheck.id(Snowflake(798666698873503814));
 
-Future<Iterable<ArgChoiceBuilder>> autocompleteCode(AutocompleteContext _) async {
+Future<Iterable<ArgChoiceBuilder>> autocompletCode(AutocompleteContext _) async {
   var rawcodes = await detabase.get('codes');
   var codes = jsonDecode(rawcodes['codes']) as Map<String, dynamic>;
   return codes.entries.map((entry) {
@@ -21,7 +21,7 @@ Future<Iterable<ArgChoiceBuilder>> autocompleteCode(AutocompleteContext _) async
 ChatCommand getcode = ChatCommand(
     'get-code',
     'get a desired private server',
-    id('server', (IChatContext context, @Autocomplete(autocompleteCode) String game) async {
+    id('server', (IChatContext context, @Autocomplete(autocompletCode) String game) async {
       var rawcodes = await detabase.get('codes');
       var codes = jsonDecode(rawcodes['codes']) as Map<String, dynamic>;
 
