@@ -23,6 +23,7 @@ void main() async {
     ..addCommand(untimeout)
     ..addCommand(exile)
     ..addCommand(updatecode)
+    ..addCommand(listcode)
     ..addCommand(ping);
 
   client
