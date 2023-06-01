@@ -7,8 +7,6 @@ import '../Services/checks.dart';
 
 final detabase = deta.base('ragenki-ps');
 
-var check = GuildCheck.id(Snowflake(798666698873503814));
-
 ChatCommand listcode = ChatCommand(
     'list-codes',
     'list all codes',

@@ -27,3 +27,4 @@ dependencies:
   intl: ^0.18.0
   nyxx: ^5.0.1
   nyxx_commands: ^5.0.0
+  youtube_explode_dart: ^1.10.4

@@ -41,6 +41,8 @@ ChatCommand updatecode = ChatCommand(
         var rawcodes = await detabase.get('codes');
         var codes = jsonDecode(rawcodes['codes']) as Map<String, dynamic>;
 
+        replaceValue(codes, key, newCode);
+
         detabase.update(key: 'codes', item: <String, dynamic>{'codes': json.encode(codes)});
 
         EmbedBuilder embed = EmbedBuilder()
