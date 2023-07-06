@@ -38,15 +38,20 @@ void main() async {
     ..eventsWs.onMessageReceived.listen((event) async {
       final message = event.message;
       final authorID = message.author.id.toString();
-      print("Hello222");
+      final channelID = '969183828457422868';
+      final user = await client.fetchUser(message.author.id);
+      final channel = await client.fetchChannel(Snowflake(channelID));
+      print("Recived Message");
+      
+      if (message.content.toLowerCase() == "shikai timer" && playerTimers.containsKey(authorID) == false) {
+        print("Conditions Met, now exucutingh");
 
-      if (message.content.toLowerCase() == "shikai timer" &&
-          playerTimers.containsKey(authorID) == false) {
-        print("Hello");
+         if (channel is ITextChannel){
+            await channel.sendMessage(MessageBuilder.content('${user.mention} timer started I will let you know when you can fight your shikai again'));
+          }
         playerTimers[authorID] = Timer(Duration(minutes: 30), () async {
-          final channelID = '969183828457422868';
-          final channel = await client.fetchChannel(Snowflake(channelID));
-          final user = await client.fetchUser(message.author.id);
+
+
           if (channel is ITextChannel){
             await channel.sendMessage(MessageBuilder.content('${user.mention} time for shikai good luck!'));
           }
