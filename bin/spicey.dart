@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 import 'package:nyxx/nyxx.dart';
 import 'package:nyxx_commands/nyxx_commands.dart';
 import 'package:spicey/spicey_commands.dart';
@@ -6,6 +7,7 @@ import '../lib/src/Services/db.dart' as db;
 
 void main() async {
   final database = db.MyDatabase('./lib/src/Data');
+  final playerTimers = <String, Timer>{};
   final token = Platform.environment['discordToken']!;
   final client = NyxxFactory.createNyxxWebsocket(token, GatewayIntents.all);
   final commands = CommandsPlugin(
@@ -32,6 +34,26 @@ void main() async {
 
       shardManager.setPresence(PresenceBuilder.of(
           activity: ActivityBuilder('to my heart', ActivityType.listening)));
+    })
+    ..eventsWs.onMessageReceived.listen((event) async {
+      final message = event.message;
+      final authorID = message.author.id.toString();
+      print("Hello222");
+
+      if (message.content.toLowerCase() == "shikai timer" &&
+          playerTimers.containsKey(authorID) == false) {
+        print("Hello");
+        playerTimers[authorID] = Timer(Duration(minutes: 30), () async {
+          final channelID = '969183828457422868';
+          final channel = await client.fetchChannel(Snowflake(channelID));
+          final user = await client.fetchUser(message.author.id);
+          if (channel is ITextChannel){
+            await channel.sendMessage(MessageBuilder.content('${user.mention} time for shikai good luck!'));
+          }
+          
+          playerTimers.remove(authorID);
+        });
+      }
     })
     ..eventsWs.onMessageDelete.listen((event) async {
       // make sure its not the bot message that got deleted
